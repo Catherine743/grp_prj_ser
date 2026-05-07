@@ -19,6 +19,9 @@ pipelineTracker.use(express.json())
 // use router in server app
 pipelineTracker.use(router)
 
+// handle image from server
+pipelineTracker.use('/uploads', express.static('./uploads'))
+
 // create port for server to available on web
 const PORT = 4000
 

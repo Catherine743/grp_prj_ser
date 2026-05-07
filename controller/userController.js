@@ -74,3 +74,45 @@ exports.googleLoginController = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+// GET PROFILE
+exports.getProfile = async (req, res) => {
+    try {
+        const email = req.payload
+
+        const user = await users.findOne({ email })
+
+        res.status(200).json(user)
+
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
+
+// UPDATE PROFILE
+exports.updateProfile = async (req, res) => {
+    try {
+        const userMail = req.payload;
+
+        const updatedUser = await users.findOneAndUpdate(
+            { email: userMail },
+            req.body,
+            { new: true }
+        );
+
+        res.status(200).json(updatedUser);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+// GET ALL USERS (ADMIN)
+exports.getAllUsers = async (req, res) => {
+  try {
+    const data = await users.find({ role: "user" });
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};

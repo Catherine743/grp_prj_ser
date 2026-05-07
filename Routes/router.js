@@ -26,7 +26,7 @@ router.put('/edit/:id', jwtMiddleware, upload.single("resume"), appController.ed
 router.get('/get-profile', jwtMiddleware, userController.getProfile)
 
 // update-profile
-router.put('/update-profile', jwtMiddleware, userController.updateProfile)
+router.put('/update-profile', adminMiddleware, upload.single("image"), userController.updateProfile);
 
 // get-notifications
 router.get('/get-notify', jwtMiddleware, notificationController.getNotifications)

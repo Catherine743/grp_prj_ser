@@ -35,11 +35,11 @@ exports.loginController = async (req, res) => {
                 const token = jwt.sign({ userMail: existingUser.email, role: existingUser.role }, process.env.jwtSecret)
                 res.status(200).json({ user: existingUser, token })
             }
-            else{
+            else {
                 res.status(401).json("Incorrect Email/Password")
             }
         }
-        else{
+        else {
             res.status(404).json("Account does not exist")
         }
     }
@@ -94,11 +94,29 @@ exports.updateProfile = async (req, res) => {
     try {
         const userMail = req.payload;
 
+        const imageFile = req.file ? req.file.filename : null;
+
+        const updateData = {
+            ...req.body,
+        };
+
+        if (imageFile) {
+            updateData.image = imageFile;
+        }
+
         const updatedUser = await users.findOneAndUpdate(
             { email: userMail },
-            req.body,
-            { new: true }
-        );
+            updateData,
+            {
+                new: true,
+                returnDocument: "after"
+            }
+        ).lean();
+
+        // convert to full URL
+        if (updatedUser.image) {
+            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
+        }
 
         res.status(200).json(updatedUser);
 
@@ -109,10 +127,10 @@ exports.updateProfile = async (req, res) => {
 
 // GET ALL USERS (ADMIN)
 exports.getAllUsers = async (req, res) => {
-  try {
-    const data = await users.find({ role: "user" });
-    res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+    try {
+        const data = await users.find({ role: "user" });
+        res.status(200).json(data);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 };

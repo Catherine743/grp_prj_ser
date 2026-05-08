@@ -77,27 +77,96 @@ exports.googleLoginController = async (req, res) => {
 
 // GET PROFILE
 exports.getProfile = async (req, res) => {
+
     try {
-        const email = req.payload
 
-        const user = await users.findOne({ email })
+        const email = req.payload;
 
-        res.status(200).json(user)
+        const user = await users.findOne({ email }).lean();
+
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+
+        // IMAGE URL FIX
+        if (user.image) {
+
+            user.image =
+                `http://localhost:4000/uploads/${user.image}`;
+        }
+
+        res.status(200).json(user);
 
     } catch (err) {
-        res.status(500).json(err)
+
+        res.status(500).json(err);
     }
-}
+};
 
 // UPDATE PROFILE
 exports.updateProfile = async (req, res) => {
     try {
-        const userMail = req.payload;
+        const { id } = req.params; // user id from admin panel
 
         const imageFile = req.file ? req.file.filename : null;
 
+        const user = await users.findById(id);
+
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+
         const updateData = {
-            ...req.body,
+            username: req.body.username,
+            email: req.body.email,
+            bio: req.body.bio,
+            location: req.body.location,
+            role: req.body.role, // admin can change role
+        };
+
+        if (imageFile) {
+            updateData.image = imageFile;
+        }
+
+        const updatedUser = await users.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true, returnDocument: "after" }
+        ).lean();
+
+        if (updatedUser.image) {
+            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
+        }
+
+        res.status(200).json(updatedUser);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+exports.userUpdateProfile = async (req, res) => {
+    try {
+        const userEmail = req.payload; // from JWT
+
+        const imageFile = req.file ? req.file.filename : null;
+
+        const user = await users.findOne({ email: userEmail });
+
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+
+        // OWNER CHECK (extra safety like your delete logic)
+        if (user.email !== userEmail) {
+            return res.status(403).json("Unauthorized");
+        }
+
+        const updateData = {
+            username: req.body.username,
+            email: req.body.email,
+            bio: req.body.bio,
+            location: req.body.location,
         };
 
         if (imageFile) {
@@ -105,15 +174,11 @@ exports.updateProfile = async (req, res) => {
         }
 
         const updatedUser = await users.findOneAndUpdate(
-            { email: userMail },
+            { email: userEmail },
             updateData,
-            {
-                new: true,
-                returnDocument: "after"
-            }
+            { new: true, returnDocument: "after" }
         ).lean();
 
-        // convert to full URL
         if (updatedUser.image) {
             updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
         }

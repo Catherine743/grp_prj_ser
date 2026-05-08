@@ -105,45 +105,64 @@ exports.getProfile = async (req, res) => {
 
 // UPDATE PROFILE
 exports.updateProfile = async (req, res) => {
+
     try {
-        const { id } = req.params; // user id from admin panel
 
-        const imageFile = req.file ? req.file.filename : null;
+        const userMail = req.payload
 
-        const user = await users.findById(id);
+        const {
+            username,
+            email,
+            bio,
+            location
+        } = req.body
 
-        if (!user) {
-            return res.status(404).json("User not found");
+        // IMAGE
+        let image = ""
+
+        if (req.file) {
+            image = req.file.filename
         }
 
-        const updateData = {
-            username: req.body.username,
-            email: req.body.email,
-            bio: req.body.bio,
-            location: req.body.location,
-            role: req.body.role, // admin can change role
-        };
+        // FIND USER
+        const existingUser = await users.findOne({
+            email: userMail
+        })
 
-        if (imageFile) {
-            updateData.image = imageFile;
+        // KEEP OLD IMAGE IF NO NEW IMAGE
+        if (!image) {
+            image = existingUser.image
         }
 
-        const updatedUser = await users.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, returnDocument: "after" }
-        ).lean();
+        // UPDATE
+        const updatedUser = await users.findOneAndUpdate(
 
-        if (updatedUser.image) {
-            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
-        }
+            { email: userMail },
 
-        res.status(200).json(updatedUser);
+            {
+                username,
+                email,
+                bio,
+                location,
+                image
+            },
 
-    } catch (err) {
-        res.status(500).json(err);
+            { new: true }
+
+        )
+
+        res.status(200).json(updatedUser)
+
     }
-};
+
+    catch (err) {
+
+        console.log(err)
+
+        res.status(500).json(err)
+
+    }
+}
 
 exports.userUpdateProfile = async (req, res) => {
     try {

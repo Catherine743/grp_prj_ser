@@ -4,7 +4,10 @@ const notificationSchema = new mongoose.Schema({
     userId: String,
     type: String,
     message: String,
-    time: String,
+    time: {
+        type: Date,
+        default: Date.now
+    },
     read: {
         type: Boolean,
         default: false

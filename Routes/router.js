@@ -70,9 +70,6 @@ router.delete('/user/delete/:id', jwtMiddleware, appController.deleteApplication
 // delete admin
 router.delete('/admin/delete/:id', adminMiddleware, appController.adminDeleteApplication)
 
-// delete admin
-router.delete('/admin/delete/:id', adminMiddleware, appController.adminDeleteApplication)
-
 // clear-admin-notifications
 router.delete('/admin-clear-notify',adminMiddleware,notificationController.clearAdminNotifications)
 

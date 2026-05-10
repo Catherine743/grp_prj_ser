@@ -70,4 +70,19 @@ router.delete('/user/delete/:id', jwtMiddleware, appController.deleteApplication
 // delete admin
 router.delete('/admin/delete/:id', adminMiddleware, appController.adminDeleteApplication)
 
+// delete admin
+router.delete('/admin/delete/:id', adminMiddleware, appController.adminDeleteApplication)
+
+// clear-admin-notifications
+router.delete('/admin-clear-notify',adminMiddleware,notificationController.clearAdminNotifications)
+
+// MARK READ (ADMIN)
+router.put('/admin-put-notify/:id', adminMiddleware, notificationController.markAdminAsRead);
+
+// DELETE ONE (ADMIN)
+router.delete('/admin-delete-notify/:id', adminMiddleware, notificationController.deleteAdminNotification);
+
+// get-admin-notifications
+router.get('/admin-notify', adminMiddleware, notificationController.getAdminNotifications)
+
 module.exports = router

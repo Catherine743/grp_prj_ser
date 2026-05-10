@@ -7,7 +7,7 @@ exports.getNotifications = async (req, res) => {
     try {
 
         let query = {
-            userId: req.payload.email
+            userId: req.payload
         };
 
         // ADMIN GETS ADMIN ALERTS

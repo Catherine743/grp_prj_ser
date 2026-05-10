@@ -228,7 +228,7 @@ exports.updateStatus = async (req, res) => {
         }
 
         await Notification.create({
-            userId: app.userId,
+            userId: app.email,
             type: "status-update",
             message,
             time: Date.now(),

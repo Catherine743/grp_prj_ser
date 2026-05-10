@@ -3,21 +3,38 @@ const users = require('../model/userModel')
 
 // GET
 exports.getNotifications = async (req, res) => {
-
     try {
 
-        const userEmail = req.payload;
+        const email = req.payload;
+        const role = req.role;
 
-        const data = await Notification.find({
-            userId: userEmail
-        }).sort({ createdAt: -1 });
+        let query = {};
+
+        if (role === "admin") {
+
+            // ADMIN: get all admin + system alerts
+            query = {
+                recipientType: "admin"
+            };
+
+        } else {
+
+            // USER: get ALL user notifications (safe fallback)
+            query = {
+                userId: email
+            };
+
+        }
+
+        const data = await Notification.find(query)
+            .sort({ createdAt: -1 });
 
         res.status(200).json(data);
 
     } catch (err) {
         res.status(500).json(err);
     }
-};
+}
 
 // MARK READ
 exports.markAsRead = async (req, res) => {
@@ -33,7 +50,10 @@ exports.deleteNotification = async (req, res) => {
 
 // CLEAR ALL
 exports.clearAll = async (req, res) => {
-    await Notification.deleteMany({ userId: req.payload })
+    await Notification.deleteMany({
+        userId: req.payload,
+        recipientType: "user"
+    });
     res.status(200).json("Cleared")
 }
 
@@ -41,7 +61,7 @@ exports.clearAll = async (req, res) => {
 exports.getAdminNotifications = async (req, res) => {
     try {
         const data = await Notification.find({
-            role: "admin"
+            recipientType: "admin"
         }).sort({ createdAt: -1 });
 
         res.status(200).json(data);
@@ -54,7 +74,7 @@ exports.getAdminNotifications = async (req, res) => {
 exports.clearAdminNotifications = async (req, res) => {
     try {
         await Notification.deleteMany({
-            role: "admin"
+            recipientType: "admin"
         });
 
         res.status(200).json("Admin notifications cleared");

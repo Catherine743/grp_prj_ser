@@ -1,13 +1,20 @@
 const mongoose = require('mongoose')
 
 const notificationSchema = new mongoose.Schema({
-    userId: String,
+    userId: {
+        type: String,
+        required: true
+    },
     type: String,
     message: String,
-    time: {
-        type: Date,
-        default: Date.now
+
+    // NEW: clearly separate admin/user
+    recipientType: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user"
     },
+
     read: {
         type: Boolean,
         default: false

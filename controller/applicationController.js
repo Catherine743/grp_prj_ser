@@ -38,15 +38,11 @@ exports.addApplication = async (req, res) => {
         // =======================
 
         await Notification.create({
-
             userId: "admin",
-
             type: "new-application",
-
             message: `${user} applied for ${designation} at ${company}`,
-
+            recipientType: "admin",
             read: false
-
         })
 
         res.status(200).json(newApp)
@@ -208,15 +204,11 @@ exports.updateStatus = async (req, res) => {
             if (diffDays <= 3 && diffDays >= 0) {
 
                 await Notification.create({
-
                     userId: "admin",
-
                     type: "interview-alert",
-
                     message: `Interview for ${app.user} is scheduled on ${interviewDate}`,
-
+                    recipientType: "admin",
                     read: false
-
                 });
 
             }
@@ -228,9 +220,10 @@ exports.updateStatus = async (req, res) => {
         }
 
         await Notification.create({
-            userId: app.email,   // FIX HERE
+            userId: app.userId,
             type: "status-update",
             message,
+            recipientType: "user",
             read: false
         });
 

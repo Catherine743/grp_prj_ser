@@ -11,11 +11,11 @@ const adminMiddleware = (req, res, next) => {
             const jwtResponse = jwt.verify(token, process.env.jwtSecret)
             // console.log(jwtResponse);
             req.payload = jwtResponse.userMail
-            const role = jwtResponse.role
-            if (role == 'admin') {
+            req.role = jwtResponse.role   
+
+            if (jwtResponse.role == 'admin') {
                 next()
-            }
-            else {
+            } else {
                 res.status(401).json("Admin authorization failed!!!")
             }
         }

@@ -10,6 +10,7 @@ const jwtMiddleware = (req, res, next) => {
             const jwtResponse = jwt.verify(token, process.env.jwtSecret)
             // console.log(jwtResponse);
             req.payload = jwtResponse.userMail
+            req.role = jwtResponse.role
             next()
         }
         catch (err) {

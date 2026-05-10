@@ -6,34 +6,18 @@ exports.getNotifications = async (req, res) => {
 
     try {
 
-        let query = {
-            userId: req.payload.email
-        };
+        const userEmail = req.payload;
 
-        // ADMIN GETS ADMIN ALERTS
+        const data = await Notification.find({
+            userId: userEmail
+        }).sort({ createdAt: -1 });
 
-        if (req.payload.role === "admin") {
-
-            query = {
-                $or: [
-                    { userId: "admin" },
-                    { userId: req.payload.email }
-                ]
-            };
-
-        }
-
-        const data = await Notification.find(query)
-            .sort({ createdAt: -1 });
-
-        res.status(200).json(data)
+        res.status(200).json(data);
 
     } catch (err) {
-
-        res.status(500).json(err)
-
+        res.status(500).json(err);
     }
-}
+};
 
 // MARK READ
 exports.markAsRead = async (req, res) => {

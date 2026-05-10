@@ -6,9 +6,25 @@ exports.getNotifications = async (req, res) => {
 
     try {
 
-        const data = await Notification.find({
-            userId: req.payload
-        }).sort({ createdAt: -1 })
+        let query = {
+            userId: req.payload.email
+        };
+
+        // ADMIN GETS ADMIN ALERTS
+
+        if (req.payload.role === "admin") {
+
+            query = {
+                $or: [
+                    { userId: "admin" },
+                    { userId: req.payload.email }
+                ]
+            };
+
+        }
+
+        const data = await Notification.find(query)
+            .sort({ createdAt: -1 });
 
         res.status(200).json(data)
 

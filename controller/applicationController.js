@@ -33,6 +33,22 @@ exports.addApplication = async (req, res) => {
 
         })
 
+        // =======================
+        // ADMIN NOTIFICATION
+        // =======================
+
+        await Notification.create({
+
+            userId: "admin",
+
+            type: "new-application",
+
+            message: `${user} applied for ${designation} at ${company}`,
+
+            read: false
+
+        })
+
         res.status(200).json(newApp)
 
     } catch (err) {
@@ -169,7 +185,42 @@ exports.updateStatus = async (req, res) => {
         let message = `Your application for ${app.company} is now ${status}`;
 
         if (status === "Interview") {
+
             message = `Interview scheduled for ${app.company} on ${interviewDate}`;
+
+            // =======================
+            // ADMIN INTERVIEW ALERT
+            // =======================
+
+            const today = new Date();
+
+            const interview = new Date(interviewDate);
+
+            const diffTime =
+                interview.getTime() - today.getTime();
+
+            const diffDays = Math.ceil(
+                diffTime / (1000 * 60 * 60 * 24)
+            );
+
+            // WITHIN 3 DAYS
+
+            if (diffDays <= 3 && diffDays >= 0) {
+
+                await Notification.create({
+
+                    userId: "admin",
+
+                    type: "interview-alert",
+
+                    message: `Interview for ${app.user} is scheduled on ${interviewDate}`,
+
+                    read: false
+
+                });
+
+            }
+
         } else if (status === "Offer") {
             message = `Congratulations! You received an offer from ${app.company}`;
         } else if (status === "Rejected") {
@@ -177,7 +228,7 @@ exports.updateStatus = async (req, res) => {
         }
 
         await Notification.create({
-            userId: app.email,
+            userId: app.userId,
             type: "status-update",
             message,
             time: Date.now(),

@@ -11,7 +11,7 @@ exports.addApplication = async (req, res) => {
             user,
             email,
             designation,
-            company,
+            phoneNo,
             date
         } = req.body
 
@@ -26,7 +26,7 @@ exports.addApplication = async (req, res) => {
             email,
 
             designation,
-            company,
+            phoneNo,
             date,
 
             resume,
@@ -47,7 +47,7 @@ exports.addApplication = async (req, res) => {
         await Notification.create({
             userId: "admin",
             type: "new-application",
-            message: `${user} applied for ${designation} at ${company}`,
+            message: `${user} applied for ${designation}`,
             recipientType: "admin",
             read: false
         })
@@ -110,7 +110,7 @@ exports.editApplication = async (req, res) => {
             user,
             email,
             designation,
-            company,
+            phoneNo,
             date
         } = req.body
 
@@ -136,7 +136,7 @@ exports.editApplication = async (req, res) => {
                 user,
                 email,
                 designation,
-                company,
+                phoneNo,
                 date,
                 resume
             },
@@ -146,7 +146,7 @@ exports.editApplication = async (req, res) => {
         await Notification.create({
             userId: "admin",
             type: "application-updated",
-            message: `${user} updated application for ${company}`,
+            message: `${user} updated application for ${designation}`,
             recipientType: "admin",
             read: false
         })
@@ -196,11 +196,11 @@ exports.updateStatus = async (req, res) => {
         // =======================
         // NOTIFICATION
         // =======================
-        let message = `Your application for ${app.company} is now ${status}`;
+        let message = `Your application for ${app.designation} is now ${status}`;
 
         if (status === "Interview") {
 
-            message = `Interview scheduled for ${app.company} on ${interviewDate}`;
+            message = `Interview scheduled for ${app.user} on ${interviewDate}`;
 
             // =======================
             // ADMIN INTERVIEW ALERT
@@ -232,9 +232,9 @@ exports.updateStatus = async (req, res) => {
             }
 
         } else if (status === "Offer") {
-            message = `Congratulations! You received an offer from ${app.company}`;
+            message = `Congratulations! You received an offer for ${app.designation}`;
         } else if (status === "Rejected") {
-            message = `Your application for ${app.company} was rejected`;
+            message = `Your application for ${app.designation} was rejected`;
         }
 
         await Notification.create({

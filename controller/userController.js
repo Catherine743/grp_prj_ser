@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 // register
 exports.registerController = async (req, res) => {
     console.log("Inside user register controller");
-    const { username, email, password } = req.body
+    const { username, email, phoneNo, password } = req.body
     // console.log(username, email, password);
     try {
         const existingUser = await users.findOne({ email })
@@ -13,7 +13,7 @@ exports.registerController = async (req, res) => {
         }
         else {
             const newUser = await users.create({
-                username, email, password
+                username, email, phoneNo, password
             })
             res.status(200).json(newUser)
         }
@@ -52,7 +52,7 @@ exports.loginController = async (req, res) => {
 // googleLoginController
 exports.googleLoginController = async (req, res) => {
     console.log("Inside user google login controller");
-    const { email, password, username, image } = req.body
+    const { email, password, username, image, phoneNo } = req.body
     try {
         const existingUser = await users.findOne({ email })
         if (existingUser) {
@@ -63,7 +63,7 @@ exports.googleLoginController = async (req, res) => {
         else {
             // register
             const newUser = await users.create({
-                username, email, password, image
+                username, email, password, image, phoneNo
             })
             const token = jwt.sign({ userMail: newUser.email, role: newUser.role }, process.env.jwtSecret);
             res.status(200).json({ user: newUser, token })
@@ -113,6 +113,7 @@ exports.updateProfile = async (req, res) => {
         const {
             username,
             email,
+            phoneNo,
             bio,
             location
         } = req.body
@@ -142,6 +143,7 @@ exports.updateProfile = async (req, res) => {
             {
                 username,
                 email,
+                phoneNo,
                 bio,
                 location,
                 image
@@ -184,6 +186,7 @@ exports.userUpdateProfile = async (req, res) => {
         const updateData = {
             username: req.body.username,
             email: req.body.email,
+            phoneNo: req.body.phoneNo,
             bio: req.body.bio,
             location: req.body.location,
         };

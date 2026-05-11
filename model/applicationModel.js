@@ -22,11 +22,6 @@ const applicationSchema = new mongoose.Schema(
       required: true
     },
 
-    company: {
-      type: String,
-      required: true
-    },
-
     status: {
       type: String,
       enum: ["Applied", "Interview", "Offer", "Rejected"],

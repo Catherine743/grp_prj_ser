@@ -57,7 +57,7 @@ exports.googleLoginController = async (req, res) => {
         const existingUser = await users.findOne({ email })
         if (existingUser) {
             // login
-            const token = jwt.sign({ userMail: existingUser.email, role: existingUser.role }, process.env.jwtSecret);
+            const token = jwt.sign({ userId: existingUser._id, userMail: existingUser.email, role: existingUser.role }, process.env.jwtSecret);
             res.status(200).json({ user: existingUser, token })
         }
         else {

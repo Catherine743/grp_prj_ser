@@ -5,7 +5,7 @@ const users = require('../model/userModel')
 exports.getNotifications = async (req, res) => {
     try {
 
-        const email = req.payload;
+        const userEmail = req.payload;
         const role = req.role;
 
         let query = {};
@@ -20,8 +20,11 @@ exports.getNotifications = async (req, res) => {
         } else {
 
             // USER: get ALL user notifications (safe fallback)
+            const user = await users.findOne({ email: userEmail });
+
             query = {
-                userId: email
+                userId: user._id.toString(),
+                recipientType: "user"
             };
 
         }

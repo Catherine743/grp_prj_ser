@@ -31,6 +31,13 @@ exports.addApplication = async (req, res) => {
 
             resume,
 
+            history: [
+                {
+                    status: "Applied",
+                    date: new Date()
+                }
+            ]
+
         })
 
         // =======================
@@ -78,7 +85,10 @@ exports.getUserApplications = async (req, res) => {
     try {
         const userMail = req.payload;
 
-        const data = await applications.find({ email: userMail });
+        const data = await applications.find({
+            email: userMail,
+            isDeletedByAdmin: false
+        });
 
         res.status(200).json(data);
 
@@ -132,6 +142,14 @@ exports.editApplication = async (req, res) => {
             },
             { new: true }
         )
+
+        await Notification.create({
+            userId: "admin",
+            type: "application-updated",
+            message: `${user} updated application for ${company}`,
+            recipientType: "admin",
+            read: false
+        })
 
         res.status(200).json(updated)
 
@@ -315,11 +333,28 @@ exports.adminDeleteApplication = async (req, res) => {
 
 // GET SINGLE APPLICATION
 exports.getSingleApplication = async (req, res) => {
+
     try {
-        const data = await applications.findById(req.params.id)
-        res.status(200).json(data)
+
+        const app = await applications.findById(req.params.id);
+
+        if (!app) {
+            return res.status(404).json("Application not found");
+        }
+
+        if (
+            req.role !== "admin" &&
+            app.email !== req.payload
+        ) {
+            return res.status(403).json("Unauthorized");
+        }
+
+        res.status(200).json(app);
+
     } catch (err) {
-        res.status(500).json(err)
+
+        res.status(500).json(err);
+
     }
 }
 

@@ -367,6 +367,9 @@ exports.updateResume = async (req, res) => {
 
         const app = await applications.findById(id)
 
+        const fs = require("fs")
+        const path = require("path")
+
         if (!app) {
             return res.status(404).json("Application not found")
         }
@@ -375,6 +378,18 @@ exports.updateResume = async (req, res) => {
             return res.status(400).json("Please upload a resume")
         }
 
+        if (app.resume) {
+
+            const oldPath = path.join(
+                __dirname,
+                "../uploads",
+                app.resume
+            )
+
+            if (fs.existsSync(oldPath)) {
+                fs.unlinkSync(oldPath)
+            }
+        }
         app.resume = req.file.filename
 
         await app.save()

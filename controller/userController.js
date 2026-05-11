@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 // register
 exports.registerController = async (req, res) => {
     console.log("Inside user register controller");
-    const { username, email, phoneNo, password } = req.body
+    const { username, email, password } = req.body
     // console.log(username, email, password);
     try {
         const existingUser = await users.findOne({ email })
@@ -13,7 +13,7 @@ exports.registerController = async (req, res) => {
         }
         else {
             const newUser = await users.create({
-                username, email, phoneNo, password
+                username, email, password
             })
             res.status(200).json(newUser)
         }
@@ -52,7 +52,7 @@ exports.loginController = async (req, res) => {
 // googleLoginController
 exports.googleLoginController = async (req, res) => {
     console.log("Inside user google login controller");
-    const { email, password, username, image, phoneNo } = req.body
+    const { email, password, username, image } = req.body
     try {
         const existingUser = await users.findOne({ email })
         if (existingUser) {
@@ -63,7 +63,7 @@ exports.googleLoginController = async (req, res) => {
         else {
             // register
             const newUser = await users.create({
-                username, email, password, image, phoneNo
+                username, email, password, image
             })
             const token = jwt.sign({ userMail: newUser.email, role: newUser.role }, process.env.jwtSecret);
             res.status(200).json({ user: newUser, token })

@@ -10,8 +10,7 @@ exports.addApplication = async (req, res) => {
             userId,
             user,
             email,
-            designation,
-            phoneNo
+            designation
         } = req.body
 
         // CHECK RESUME
@@ -27,7 +26,6 @@ exports.addApplication = async (req, res) => {
             user,
             email,
             designation,
-            phoneNo,
             resume
 
         })
@@ -95,8 +93,7 @@ exports.editApplication = async (req, res) => {
         const {
             user,
             email,
-            designation,
-            phoneNo
+            designation
         } = req.body
 
         const app = await applications.findById(id)
@@ -121,7 +118,6 @@ exports.editApplication = async (req, res) => {
                 user,
                 email,
                 designation,
-                phoneNo,
                 resume
             },
             { new: true }

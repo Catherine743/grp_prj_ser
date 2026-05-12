@@ -27,25 +27,14 @@ const applicationSchema = new mongoose.Schema(
       enum: ["Applied", "Interview", "Offer", "Rejected"],
       default: "Applied"
     },
-
     interviewDate: {
       type: String,
       default: ""
     },
-
     date: {
       type: String,
       required: true
     },
-    history: [
-      {
-        status: String,
-        date: {
-          type: Date,
-          default: Date.now
-        }
-      }
-    ],
     resume: {
         type: String
     },

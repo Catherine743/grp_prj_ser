@@ -24,19 +24,10 @@ exports.addApplication = async (req, res) => {
             userId,
             user,
             email,
-
             designation,
             phoneNo,
             date,
-
-            resume,
-
-            history: [
-                {
-                    status: "Applied",
-                    date: new Date()
-                }
-            ]
+            resume
 
         })
 
@@ -185,11 +176,6 @@ exports.updateStatus = async (req, res) => {
             app.interviewDate = interviewDate;
         }
 
-        // HISTORY
-        app.history.push({
-            status,
-            date: new Date()
-        });
 
         await app.save();
 

@@ -168,7 +168,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.userUpdateProfile = async (req, res) => {
     try {
-        const userEmail = req.payload; // from JWT
+        const userEmail = req.payload; 
 
         const imageFile = req.file ? req.file.filename : null;
 
@@ -178,7 +178,6 @@ exports.userUpdateProfile = async (req, res) => {
             return res.status(404).json("User not found");
         }
 
-        // OWNER CHECK (extra safety like your delete logic)
         if (user.email !== userEmail) {
             return res.status(403).json("Unauthorized");
         }

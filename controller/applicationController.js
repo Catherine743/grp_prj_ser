@@ -29,9 +29,7 @@ exports.addApplication = async (req, res) => {
 
         })
 
-        // =======================
         // ADMIN NOTIFICATION
-        // =======================
 
         await Notification.create({
             userId: "admin",
@@ -172,18 +170,14 @@ exports.updateStatus = async (req, res) => {
 
         await app.save();
 
-        // =======================
         // NOTIFICATION
-        // =======================
         let message = `Your application for ${app.designation} is now ${status}`;
 
         if (status === "Interview") {
 
             message = `Interview scheduled for ${app.user} on ${interviewDate}`;
 
-            // =======================
             // ADMIN INTERVIEW ALERT
-            // =======================
 
             const today = new Date();
 

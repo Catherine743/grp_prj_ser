@@ -12,14 +12,12 @@ exports.getNotifications = async (req, res) => {
 
         if (role === "admin") {
 
-            // ADMIN: get all admin + system alerts
             query = {
                 recipientType: "admin"
             };
 
         } else {
 
-            // USER: get ALL user notifications (safe fallback)
             const user = await users.findOne({ email: userEmail });
 
             query = {
@@ -74,6 +72,7 @@ exports.getAdminNotifications = async (req, res) => {
     }
 };
 
+// CLEAR NOTIFICATIONS (ADMIN)
 exports.clearAdminNotifications = async (req, res) => {
     try {
         await Notification.deleteMany({

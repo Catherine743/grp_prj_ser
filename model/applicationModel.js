@@ -33,10 +33,6 @@ const applicationSchema = new mongoose.Schema(
     },
     resume: {
         type: String
-    },
-    isDeletedByAdmin: {
-        type: Boolean,
-        default: false
     }
   },
   { timestamps: true }

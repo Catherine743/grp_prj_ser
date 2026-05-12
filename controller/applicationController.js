@@ -55,9 +55,7 @@ exports.addApplication = async (req, res) => {
 exports.getAllApplications = async (req, res) => {
     try {
 
-        const data = await applications.find({
-            isDeletedByAdmin: false
-        });
+        const data = await applications.find();
 
         res.status(200).json({
             data
@@ -75,8 +73,7 @@ exports.getUserApplications = async (req, res) => {
         const userMail = req.payload;
 
         const data = await applications.find({
-            email: userMail,
-            isDeletedByAdmin: false
+            email: userMail
         });
 
         res.status(200).json(data);
@@ -301,10 +298,7 @@ exports.adminDeleteApplication = async (req, res) => {
             return res.status(404).json("Application not found");
         }
 
-        // DO NOT DELETE
-        app.isDeletedByAdmin = true;
-
-        await app.save();
+        await applications.findByIdAndDelete(id);
 
         res.status(200).json("Hidden from admin view");
 

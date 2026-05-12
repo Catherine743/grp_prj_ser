@@ -11,8 +11,7 @@ exports.addApplication = async (req, res) => {
             user,
             email,
             designation,
-            phoneNo,
-            date
+            phoneNo
         } = req.body
 
         const resume = req.file
@@ -26,7 +25,6 @@ exports.addApplication = async (req, res) => {
             email,
             designation,
             phoneNo,
-            date,
             resume
 
         })
@@ -102,7 +100,6 @@ exports.editApplication = async (req, res) => {
             email,
             designation,
             phoneNo,
-            date
         } = req.body
 
         const app = await applications.findById(id)
@@ -128,7 +125,6 @@ exports.editApplication = async (req, res) => {
                 email,
                 designation,
                 phoneNo,
-                date,
                 resume
             },
             { new: true }

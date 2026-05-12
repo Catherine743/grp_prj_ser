@@ -31,10 +31,6 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
-    date: {
-      type: String,
-      required: true
-    },
     resume: {
         type: String
     },

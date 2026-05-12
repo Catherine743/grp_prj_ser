@@ -5,10 +5,11 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
     type: String,
+
     message: String,
 
-    // NEW: clearly separate admin/user
     recipientType: {
         type: String,
         enum: ["user", "admin"],
@@ -19,6 +20,7 @@ const notificationSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+
 }, { timestamps: true })
 
 module.exports = mongoose.model("notifications", notificationSchema)

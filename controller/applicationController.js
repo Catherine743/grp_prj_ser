@@ -14,9 +14,12 @@ exports.addApplication = async (req, res) => {
             phoneNo
         } = req.body
 
-        const resume = req.file
-            ? req.file.filename
-            : ""
+        // CHECK RESUME
+        if (!req.file) {
+            return res.status(400).json("Resume is required")
+        }
+
+        const resume = req.file.filename
 
         const newApp = await applications.create({
 
@@ -30,7 +33,6 @@ exports.addApplication = async (req, res) => {
         })
 
         // ADMIN NOTIFICATION
-
         await Notification.create({
             userId: "admin",
             type: "new-application",
@@ -94,7 +96,7 @@ exports.editApplication = async (req, res) => {
             user,
             email,
             designation,
-            phoneNo,
+            phoneNo
         } = req.body
 
         const app = await applications.findById(id)

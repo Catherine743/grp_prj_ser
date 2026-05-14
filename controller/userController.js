@@ -91,8 +91,7 @@ exports.getProfile = async (req, res) => {
         // IMAGE URL FIX
         if (user.image) {
 
-            user.image =
-                `http://localhost:4000/uploads/${user.image}`;
+            user.image = `${process.env.BASE_URL}/uploads/${user.image}`;
         }
 
         res.status(200).json(user);
@@ -168,7 +167,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.userUpdateProfile = async (req, res) => {
     try {
-        const userEmail = req.payload; 
+        const userEmail = req.payload;
 
         const imageFile = req.file ? req.file.filename : null;
 
@@ -201,7 +200,7 @@ exports.userUpdateProfile = async (req, res) => {
         ).lean();
 
         if (updatedUser.image) {
-            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
+            updatedUser.image = `${process.env.BASE_URL}/uploads/${updatedUser.image}`;
         }
 
         res.status(200).json(updatedUser);

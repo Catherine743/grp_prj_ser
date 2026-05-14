@@ -173,7 +173,7 @@ exports.updateStatus = async (req, res) => {
 
         if (status === "Interview") {
 
-            message = `Interview scheduled for ${app.user} on ${interviewDate}`;
+            message = `Interview scheduled for ${app.designation} on ${interviewDate}`;
 
             // ADMIN INTERVIEW ALERT
 

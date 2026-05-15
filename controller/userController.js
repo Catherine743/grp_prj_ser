@@ -92,7 +92,7 @@ exports.getProfile = async (req, res) => {
         if (user.image) {
 
             user.image =
-                `http://localhost:4000/uploads/${user.image}`;
+                `${server_url}/uploads/${user.image}`;
         }
 
         res.status(200).json(user);
@@ -201,7 +201,7 @@ exports.userUpdateProfile = async (req, res) => {
         ).lean();
 
         if (updatedUser.image) {
-            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
+            updatedUser.image = `${server_url}/uploads/${updatedUser.image}`;
         }
 
         res.status(200).json(updatedUser);

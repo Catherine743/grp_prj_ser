@@ -29,7 +29,7 @@ exports.addApplication = async (req, res) => {
             resume
 
         })
-
+        
         // ADMIN NOTIFICATION
         await Notification.create({
             userId: "admin",
@@ -55,9 +55,7 @@ exports.getAllApplications = async (req, res) => {
 
         const data = await applications.find();
 
-        res.status(200).json({
-            data
-        });
+        res.status(200).json({ data });
 
     } catch (err) {
         res.status(500).json(err);
@@ -65,14 +63,12 @@ exports.getAllApplications = async (req, res) => {
 };
 
 
-// GET USER APPLICATIONS
+// GET APPLICATIONS (USER)
 exports.getUserApplications = async (req, res) => {
     try {
         const userMail = req.payload;
 
-        const data = await applications.find({
-            email: userMail
-        });
+        const data = await applications.find({ email: userMail });
 
         res.status(200).json(data);
 
@@ -103,7 +99,7 @@ exports.editApplication = async (req, res) => {
         }
 
         // OWNER CHECK
-        if (app.email !== userEmail) {
+        if (app.email != userEmail) {
             return res.status(403).json("Unauthorized")
         }
 

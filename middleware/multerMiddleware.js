@@ -1,19 +1,19 @@
 const multer = require('multer')
 
 const storage = multer.diskStorage({
-    destination:(req, file, callback) => {
+    destination: (req, file, callback) => {
         callback(null, './uploads')
     },
-    filename:(req, file, callback) => {
+    filename: (req, file, callback) => {
         callback(null, `${Date.now()}-${file.originalname}`)
     }
 })
 
 const fileFilter = (req, file, callback) => {
-    if(file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png' || file.mimetype == 'image/webp' || file.mimetype == 'application/pdf') {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg' || file.mimetype == 'image/png' || file.mimetype == 'image/webp' || file.mimetype == 'application/pdf') {
         callback(null, true)
     }
-    else{
+    else {
         callback(null, false)
     }
 }

@@ -168,7 +168,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.userUpdateProfile = async (req, res) => {
     try {
-        const userEmail = req.payload; 
+        const userEmail = req.payload;
 
         const imageFile = req.file ? req.file.filename : null;
 

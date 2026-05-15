@@ -11,7 +11,7 @@ const adminMiddleware = (req, res, next) => {
             const jwtResponse = jwt.verify(token, process.env.jwtSecret)
             // console.log(jwtResponse);
             req.payload = jwtResponse.userMail
-            req.role = jwtResponse.role   
+            req.role = jwtResponse.role
 
             if (jwtResponse.role == 'admin') {
                 next()

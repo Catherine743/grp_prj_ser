@@ -32,7 +32,7 @@ const applicationSchema = new mongoose.Schema(
       default: ""
     },
     resume: {
-        type: String
+      type: String
     }
   },
   { timestamps: true }

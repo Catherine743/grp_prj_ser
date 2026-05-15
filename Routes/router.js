@@ -71,7 +71,7 @@ router.delete('/user/delete/:id', jwtMiddleware, appController.deleteApplication
 router.delete('/admin/delete/:id', adminMiddleware, appController.adminDeleteApplication)
 
 // clear-admin-notifications
-router.delete('/admin-clear-notify',adminMiddleware,notificationController.clearAdminNotifications)
+router.delete('/admin-clear-notify', adminMiddleware, notificationController.clearAdminNotifications)
 
 // MARK READ (ADMIN)
 router.put('/admin-put-notify/:id', adminMiddleware, notificationController.markAdminAsRead);

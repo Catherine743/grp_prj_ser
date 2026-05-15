@@ -23,7 +23,7 @@ pipelineTracker.use(router)
 pipelineTracker.use('/uploads', express.static('./uploads'))
 
 // create port for server to available on web
-const PORT = grp-prj-ser.onrender.com
+const PORT = process.env.BASE_URL
 
 pipelineTracker.listen(PORT, () => {
     console.log(`PipelineTracker started running at PORT: ${PORT}... and waiting for client request`);

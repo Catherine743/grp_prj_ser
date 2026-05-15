@@ -22,13 +22,13 @@ pipelineTracker.use(router)
 // handle image from server
 pipelineTracker.use('/uploads', express.static('./uploads'))
 
-// // create port for server to available on web
-// const PORT = 4000
+// create port for server to available on web
+const PORT = grp-prj-ser.onrender.com
 
-// pipelineTracker.listen(PORT, () => {
-//     console.log(`PipelineTracker started running at PORT: ${PORT}... and waiting for client request`);
+pipelineTracker.listen(PORT, () => {
+    console.log(`PipelineTracker started running at PORT: ${PORT}... and waiting for client request`);
 
-// })
+})
 
 pipelineTracker.get('/', (req, res) => {
     res.status(200).send('<h1 style=color:blue>PipelineTracker started running successfully.....</h1>')

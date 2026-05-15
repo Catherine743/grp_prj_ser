@@ -232,30 +232,6 @@ exports.updateStatus = async (req, res) => {
     }
 };
 
-// DASHBOARD STATS
-exports.getStats = async (req, res) => {
-    try {
-        const { userId } = req.query
-
-        const matchStage = userId ? { userId } : {}
-
-        const stats = await applications.aggregate([
-            { $match: matchStage },
-            {
-                $group: {
-                    _id: "$status",
-                    count: { $sum: 1 }
-                }
-            }
-        ])
-
-        res.status(200).json(stats)
-
-    } catch (err) {
-        res.status(500).json(err)
-    }
-}
-
 // DELETE APPLICATION
 exports.deleteApplication = async (req, res) => {
 
@@ -272,7 +248,7 @@ exports.deleteApplication = async (req, res) => {
         }
 
         // OWNER CHECK
-        if (app.email !== userEmail) {
+        if (app.email != userEmail) {
             return res.status(403).json("Unauthorized")
         }
 
@@ -307,7 +283,7 @@ exports.adminDeleteApplication = async (req, res) => {
     }
 };
 
-// GET SINGLE APPLICATION
+// GET SINGLE APPLICATION (USER)
 exports.getSingleApplication = async (req, res) => {
 
     try {
@@ -330,51 +306,6 @@ exports.getSingleApplication = async (req, res) => {
     } catch (err) {
 
         res.status(500).json(err);
-
-    }
-}
-
-// UPDATE RESUME
-exports.updateResume = async (req, res) => {
-
-    try {
-
-        const { id } = req.params
-
-        const app = await applications.findById(id)
-
-        const fs = require("fs")
-        const path = require("path")
-
-        if (!app) {
-            return res.status(404).json("Application not found")
-        }
-
-        if (!req.file) {
-            return res.status(400).json("Please upload a resume")
-        }
-
-        if (app.resume) {
-
-            const oldPath = path.join(
-                __dirname,
-                "../uploads",
-                app.resume
-            )
-
-            if (fs.existsSync(oldPath)) {
-                fs.unlinkSync(oldPath)
-            }
-        }
-        app.resume = req.file.filename
-
-        await app.save()
-
-        res.status(200).json(app)
-
-    } catch (err) {
-
-        res.status(500).json(err)
 
     }
 }

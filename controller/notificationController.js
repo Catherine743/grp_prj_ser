@@ -1,7 +1,7 @@
 const Notification = require('../model/notificationModel')
 const users = require('../model/userModel')
 
-// GET
+// GET NOTIFICATIONS (USER)
 exports.getNotifications = async (req, res) => {
     try {
 
@@ -37,19 +37,19 @@ exports.getNotifications = async (req, res) => {
     }
 }
 
-// MARK READ
+// MARK READ NOTIFICATIONS (USER)
 exports.markAsRead = async (req, res) => {
     await Notification.findByIdAndUpdate(req.params.id, { read: true })
     res.status(200).json("Updated")
 }
 
-// DELETE ONE
+// DELETE NOTIFICATIONS (USER)
 exports.deleteNotification = async (req, res) => {
     await Notification.findByIdAndDelete(req.params.id)
     res.status(200).json("Deleted")
 }
 
-// CLEAR ALL
+// CLEAR ALL NOTIFICATIONS (USER)
 exports.clearAll = async (req, res) => {
     await Notification.deleteMany({
         userId: req.payload,
@@ -58,7 +58,7 @@ exports.clearAll = async (req, res) => {
     res.status(200).json("Cleared")
 }
 
-// GET ADMIN NOTIFICATIONS
+// GET NOTIFICATIONS (ADMIN)
 exports.getAdminNotifications = async (req, res) => {
     try {
         const data = await Notification.find({
@@ -86,7 +86,7 @@ exports.clearAdminNotifications = async (req, res) => {
     }
 };
 
-// MARK ADMIN NOTIFICATION AS READ
+// MARK READ NOTIFICATIONS (ADMIN)
 exports.markAdminAsRead = async (req, res) => {
     try {
         await Notification.findByIdAndUpdate(req.params.id, {
@@ -99,7 +99,7 @@ exports.markAdminAsRead = async (req, res) => {
     }
 };
 
-// DELETE SINGLE ADMIN NOTIFICATION
+// DELETE NOTIFICATIONS (ADMIN)
 exports.deleteAdminNotification = async (req, res) => {
     try {
         await Notification.findByIdAndDelete(req.params.id);

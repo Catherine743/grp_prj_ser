@@ -75,7 +75,7 @@ exports.googleLoginController = async (req, res) => {
     }
 }
 
-// GET PROFILE
+// GET PROFILE (USER)
 exports.getProfile = async (req, res) => {
 
     try {
@@ -103,7 +103,7 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-// UPDATE PROFILE
+// UPDATE PROFILE (ADMIN)
 exports.updateProfile = async (req, res) => {
 
     try {
@@ -166,6 +166,7 @@ exports.updateProfile = async (req, res) => {
     }
 }
 
+// UPDATE PROFILE (USER)
 exports.userUpdateProfile = async (req, res) => {
     try {
         const userEmail = req.payload;

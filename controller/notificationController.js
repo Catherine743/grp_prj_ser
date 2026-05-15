@@ -39,23 +39,39 @@ exports.getNotifications = async (req, res) => {
 
 // MARK READ NOTIFICATIONS (USER)
 exports.markAsRead = async (req, res) => {
-    await Notification.findByIdAndUpdate(req.params.id, { read: true })
-    res.status(200).json("Updated")
+    try {
+        await Notification.findByIdAndUpdate(req.params.id, { read: true })
+        res.status(200).json("Updated")
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
 }
 
 // DELETE NOTIFICATIONS (USER)
 exports.deleteNotification = async (req, res) => {
-    await Notification.findByIdAndDelete(req.params.id)
-    res.status(200).json("Deleted")
+    try {
+        await Notification.findByIdAndDelete(req.params.id)
+        res.status(200).json("Deleted")
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
 }
 
 // CLEAR ALL NOTIFICATIONS (USER)
 exports.clearAll = async (req, res) => {
-    await Notification.deleteMany({
-        userId: req.payload,
-        recipientType: "user"
-    });
-    res.status(200).json("Cleared")
+    try {
+        const user = await users.findOne({ email: req.payload })
+        await Notification.deleteMany({
+            userId: user._id.toString(),
+            recipientType: "user"
+        })
+        res.status(200).json("Cleared")
+    }
+    catch (err) {
+        res.status(500).json(err)
+    }
 }
 
 // GET NOTIFICATIONS (ADMIN)
@@ -72,26 +88,10 @@ exports.getAdminNotifications = async (req, res) => {
     }
 };
 
-// CLEAR NOTIFICATIONS (ADMIN)
-exports.clearAdminNotifications = async (req, res) => {
-    try {
-        await Notification.deleteMany({
-            recipientType: "admin"
-        });
-
-        res.status(200).json("Admin notifications cleared");
-
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
 // MARK READ NOTIFICATIONS (ADMIN)
 exports.markAdminAsRead = async (req, res) => {
     try {
-        await Notification.findByIdAndUpdate(req.params.id, {
-            read: true
-        });
+        await Notification.findByIdAndUpdate(req.params.id, { read: true });
 
         res.status(200).json("Marked as read");
     } catch (err) {
@@ -104,6 +104,20 @@ exports.deleteAdminNotification = async (req, res) => {
     try {
         await Notification.findByIdAndDelete(req.params.id);
         res.status(200).json("Deleted");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+// CLEAR NOTIFICATIONS (ADMIN)
+exports.clearAdminNotifications = async (req, res) => {
+    try {
+        await Notification.deleteMany({
+            recipientType: "admin"
+        });
+
+        res.status(200).json("Admin notifications cleared");
+
     } catch (err) {
         res.status(500).json(err);
     }

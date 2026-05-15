@@ -23,7 +23,7 @@ pipelineTracker.use(router)
 pipelineTracker.use('/uploads', express.static('./uploads'))
 
 // create port for server to available on web
-const PORT = 4000
+const PORT = process.env.BASE_URL || 4000
 
 pipelineTracker.listen(PORT, () => {
     console.log(`PipelineTracker started running at PORT: ${PORT}... and waiting for client request`);

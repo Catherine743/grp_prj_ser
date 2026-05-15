@@ -1,7 +1,7 @@
 const applications = require('../model/applicationModel')
 const Notification = require("../model/notificationModel");
 
-// ADD APPLICATION
+// ADD APPLICATION (USER)
 exports.addApplication = async (req, res) => {
 
     try {
@@ -48,36 +48,7 @@ exports.addApplication = async (req, res) => {
     }
 }
 
-
-// GET ALL APPLICATIONS (ADMIN)
-exports.getAllApplications = async (req, res) => {
-    try {
-
-        const data = await applications.find();
-
-        res.status(200).json({ data });
-
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
-
-// GET APPLICATIONS (USER)
-exports.getUserApplications = async (req, res) => {
-    try {
-        const userMail = req.payload;
-
-        const data = await applications.find({ email: userMail });
-
-        res.status(200).json(data);
-
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
-// EDIT APPLICATION
+// EDIT APPLICATION (USER)
 exports.editApplication = async (req, res) => {
 
     try {
@@ -136,6 +107,91 @@ exports.editApplication = async (req, res) => {
     }
 }
 
+// GET SINGLE APPLICATION (USER)
+exports.getSingleApplication = async (req, res) => {
+
+    try {
+
+        const app = await applications.findById(req.params.id);
+
+        if (!app) {
+            return res.status(404).json("Application not found");
+        }
+
+        if (
+            req.role !== "admin" &&
+            app.email !== req.payload
+        ) {
+            return res.status(403).json("Unauthorized");
+        }
+
+        res.status(200).json(app);
+
+    } catch (err) {
+
+        res.status(500).json(err);
+
+    }
+}
+
+// GET ALL APPLICATIONS (USER)
+exports.getUserApplications = async (req, res) => {
+    try {
+        const userMail = req.payload;
+
+        const data = await applications.find({ email: userMail });
+
+        res.status(200).json(data);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+// DELETE APPLICATION (USER)
+exports.deleteApplication = async (req, res) => {
+
+    try {
+
+        const { id } = req.params
+
+        const userEmail = req.payload
+
+        const app = await applications.findById(id)
+
+        if (!app) {
+            return res.status(404).json("Application not found")
+        }
+
+        // OWNER CHECK
+        if (app.email != userEmail) {
+            return res.status(403).json("Unauthorized")
+        }
+
+        await applications.findByIdAndDelete(id)
+
+        res.status(200).json("Deleted successfully")
+
+    } catch (err) {
+
+        res.status(500).json(err)
+
+    }
+}
+
+// GET ALL APPLICATIONS (ADMIN)
+exports.getAllApplications = async (req, res) => {
+    try {
+
+        const data = await applications.find();
+
+        res.status(200).json({ data });
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 // UPDATE STATUS (ADMIN)
 exports.updateStatus = async (req, res) => {
 
@@ -160,9 +216,6 @@ exports.updateStatus = async (req, res) => {
         if (interviewDate !== undefined) {
             app.interviewDate = interviewDate;
         }
-
-
-        await app.save();
 
         // NOTIFICATION
         let message = `Your application for ${app.designation} is now ${status}`;
@@ -215,6 +268,8 @@ exports.updateStatus = async (req, res) => {
         } else if (status === "Rejected") {
             message = `Your application for ${app.designation} was rejected`;
         }
+        
+        await app.save();
 
         await Notification.create({
             userId: app.userId,
@@ -232,38 +287,7 @@ exports.updateStatus = async (req, res) => {
     }
 };
 
-// DELETE APPLICATION
-exports.deleteApplication = async (req, res) => {
-
-    try {
-
-        const { id } = req.params
-
-        const userEmail = req.payload
-
-        const app = await applications.findById(id)
-
-        if (!app) {
-            return res.status(404).json("Application not found")
-        }
-
-        // OWNER CHECK
-        if (app.email != userEmail) {
-            return res.status(403).json("Unauthorized")
-        }
-
-        await applications.findByIdAndDelete(id)
-
-        res.status(200).json("Deleted successfully")
-
-    } catch (err) {
-
-        res.status(500).json(err)
-
-    }
-}
-
-// ADMIN DELETE APPLICATION
+// DELETE APPLICATION (ADMIN)
 exports.adminDeleteApplication = async (req, res) => {
     try {
         const { id } = req.params;
@@ -282,30 +306,3 @@ exports.adminDeleteApplication = async (req, res) => {
         res.status(500).json(err);
     }
 };
-
-// GET SINGLE APPLICATION (USER)
-exports.getSingleApplication = async (req, res) => {
-
-    try {
-
-        const app = await applications.findById(req.params.id);
-
-        if (!app) {
-            return res.status(404).json("Application not found");
-        }
-
-        if (
-            req.role !== "admin" &&
-            app.email !== req.payload
-        ) {
-            return res.status(403).json("Unauthorized");
-        }
-
-        res.status(200).json(app);
-
-    } catch (err) {
-
-        res.status(500).json(err);
-
-    }
-}

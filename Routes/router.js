@@ -25,7 +25,7 @@ router.put('/edit/:id', jwtMiddleware, upload.single("resume"), appController.ed
 // GET SINGLE APPLICATION (USER)
 router.get('/single/:id', jwtMiddleware, appController.getSingleApplication)
 
-// GET APPLICATIONS (USER)
+// GET ALL APPLICATIONS (USER)
 router.get('/user-apps', jwtMiddleware, appController.getUserApplications)
 
 // DELETE APPLICATION (USER)

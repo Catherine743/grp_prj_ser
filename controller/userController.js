@@ -1,7 +1,7 @@
 const users = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 
-// register
+// REGISTER
 exports.registerController = async (req, res) => {
     console.log("Inside user register controller");
     const { username, email, password } = req.body
@@ -24,7 +24,7 @@ exports.registerController = async (req, res) => {
     }
 }
 
-// login
+// LOGIN
 exports.loginController = async (req, res) => {
     console.log("Inside user login controller");
     const { email, password } = req.body
@@ -49,7 +49,7 @@ exports.loginController = async (req, res) => {
     }
 }
 
-// googleLoginController
+// GOOGLE LOGIN
 exports.googleLoginController = async (req, res) => {
     console.log("Inside user google login controller");
     const { email, password, username, image } = req.body
@@ -99,6 +99,62 @@ exports.getProfile = async (req, res) => {
 
     } catch (err) {
 
+        res.status(500).json(err);
+    }
+};
+
+// UPDATE PROFILE (USER)
+exports.userUpdateProfile = async (req, res) => {
+    try {
+        const userEmail = req.payload;
+
+        const imageFile = req.file ? req.file.filename : null;
+
+        const user = await users.findOne({ email: userEmail });
+
+        if (!user) {
+            return res.status(404).json("User not found");
+        }
+
+        if (user.email !== userEmail) {
+            return res.status(403).json("Unauthorized");
+        }
+
+        const updateData = {
+            username: req.body.username,
+            email: req.body.email,
+            phoneNo: req.body.phoneNo,
+            bio: req.body.bio,
+            location: req.body.location,
+        };
+
+        if (imageFile) {
+            updateData.image = imageFile;
+        }
+
+        const updatedUser = await users.findOneAndUpdate(
+            { email: userEmail },
+            updateData,
+            { new: true, returnDocument: "after" }
+        ).lean();
+
+        if (updatedUser.image) {
+            updatedUser.image = `${server_url}/uploads/${updatedUser.image}`;
+        }
+
+        res.status(200).json(updatedUser);
+
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+// GET ALL USERS (ADMIN)
+exports.getAllUsers = async (req, res) => {
+    try {
+        const data = await users.find({ role: "user" });
+        res.status(200).json(data);
+    } catch (err) {
         res.status(500).json(err);
     }
 };
@@ -165,59 +221,3 @@ exports.updateProfile = async (req, res) => {
 
     }
 }
-
-// UPDATE PROFILE (USER)
-exports.userUpdateProfile = async (req, res) => {
-    try {
-        const userEmail = req.payload;
-
-        const imageFile = req.file ? req.file.filename : null;
-
-        const user = await users.findOne({ email: userEmail });
-
-        if (!user) {
-            return res.status(404).json("User not found");
-        }
-
-        if (user.email !== userEmail) {
-            return res.status(403).json("Unauthorized");
-        }
-
-        const updateData = {
-            username: req.body.username,
-            email: req.body.email,
-            phoneNo: req.body.phoneNo,
-            bio: req.body.bio,
-            location: req.body.location,
-        };
-
-        if (imageFile) {
-            updateData.image = imageFile;
-        }
-
-        const updatedUser = await users.findOneAndUpdate(
-            { email: userEmail },
-            updateData,
-            { new: true, returnDocument: "after" }
-        ).lean();
-
-        if (updatedUser.image) {
-            updatedUser.image = `${server_url}/uploads/${updatedUser.image}`;
-        }
-
-        res.status(200).json(updatedUser);
-
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
-
-// GET ALL USERS (ADMIN)
-exports.getAllUsers = async (req, res) => {
-    try {
-        const data = await users.find({ role: "user" });
-        res.status(200).json(data);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};

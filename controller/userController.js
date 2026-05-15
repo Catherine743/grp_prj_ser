@@ -1,6 +1,5 @@
 const users = require('../model/userModel')
 const jwt = require('jsonwebtoken')
-const server_url = process.env.server_url
 
 // REGISTER
 exports.registerController = async (req, res) => {
@@ -93,7 +92,7 @@ exports.getProfile = async (req, res) => {
         if (user.image) {
 
             user.image =
-                `${server_url}/uploads/${user.image}`;
+                `https://grp-prj-ser.onrender.com/uploads/${user.image}`;
         }
 
         res.status(200).json(user);
@@ -140,7 +139,7 @@ exports.userUpdateProfile = async (req, res) => {
         ).lean();
 
         if (updatedUser.image) {
-            updatedUser.image = `${server_url}/uploads/${updatedUser.image}`;
+            updatedUser.image = `https://grp-prj-ser.onrender.com/uploads/${updatedUser.image}`;
         }
 
         res.status(200).json(updatedUser);

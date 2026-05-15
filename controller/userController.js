@@ -1,5 +1,6 @@
 const users = require('../model/userModel')
 const jwt = require('jsonwebtoken')
+const server_url = process.env.server_url
 
 // REGISTER
 exports.registerController = async (req, res) => {

@@ -92,7 +92,7 @@ exports.getProfile = async (req, res) => {
         if (user.image) {
 
             user.image =
-                `http://localhost:4000/uploads/${user.image}`;
+                `${process.env.BASE_URL}/uploads/${user.image}`;
         }
 
         res.status(200).json(user);
@@ -116,10 +116,6 @@ exports.userUpdateProfile = async (req, res) => {
             return res.status(404).json("User not found");
         }
 
-        if (user.email !== userEmail) {
-            return res.status(403).json("Unauthorized");
-        }
-
         const updateData = {
             username: req.body.username,
             email: req.body.email,
@@ -135,11 +131,11 @@ exports.userUpdateProfile = async (req, res) => {
         const updatedUser = await users.findOneAndUpdate(
             { email: userEmail },
             updateData,
-            { new: true, returnDocument: "after" }
+            { new: true }
         ).lean();
 
         if (updatedUser.image) {
-            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
+            updatedUser.image = `${process.env.BASE_URL}/uploads/${updatedUser.image}`;
         }
 
         res.status(200).json(updatedUser);
@@ -166,58 +162,32 @@ exports.updateProfile = async (req, res) => {
 
         const userMail = req.payload
 
-        const {
-            username,
-            email,
-            phoneNo,
-            bio,
-            location
-        } = req.body
+        const { username, email, phoneNo, bio, location } = req.body
 
-        // IMAGE
-        let image = ""
+        let image = req.file?.filename
 
-        if (req.file) {
-            image = req.file.filename
+        const existingUser = await users.findOne({ email: userMail })
+
+        if (!existingUser) {
+            return res.status(404).json("User not found")
         }
 
-        // FIND USER
-        const existingUser = await users.findOne({
-            email: userMail
-        })
-
-        // KEEP OLD IMAGE IF NO NEW IMAGE
         if (!image) {
             image = existingUser.image
         }
 
-        // UPDATE
-        const updatedUser = await users.findOneAndUpdate(
-
-            { email: userMail },
-
-            {
-                username,
-                email,
-                phoneNo,
-                bio,
-                location,
-                image
-            },
-
-            { new: true }
-
-        )
-
+        const updatedUser =
+            await users.findOneAndUpdate(
+                { email: userMail },
+                {
+                    username, email, phoneNo, bio, location, image
+                },
+                { new: true }
+            )
         res.status(200).json(updatedUser)
-
     }
 
     catch (err) {
-
-        console.log(err)
-
         res.status(500).json(err)
-
     }
 }

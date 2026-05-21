@@ -92,7 +92,7 @@ exports.getProfile = async (req, res) => {
         if (user.image) {
 
             user.image =
-                `https://grp-prj-ser.onrender.com/uploads/${user.image}`;
+                `http://localhost:4000/uploads/${user.image}`;
         }
 
         res.status(200).json(user);
@@ -139,7 +139,7 @@ exports.userUpdateProfile = async (req, res) => {
         ).lean();
 
         if (updatedUser.image) {
-            updatedUser.image = `https://grp-prj-ser.onrender.com/uploads/${updatedUser.image}`;
+            updatedUser.image = `http://localhost:4000/uploads/${updatedUser.image}`;
         }
 
         res.status(200).json(updatedUser);

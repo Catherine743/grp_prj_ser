@@ -5,35 +5,26 @@ const users = require('../model/userModel')
 exports.getNotifications = async (req, res) => {
     try {
 
-        const userEmail = req.payload;
-        const role = req.role;
+        const user = await users.findOne({
+            email: req.payload
+        })
 
-        let query = {};
-
-        if (role === "admin") {
-
-            query = {
-                recipientType: "admin"
-            };
-
-        } else {
-
-            const user = await users.findOne({ email: userEmail });
-
-            query = {
+        const data =
+            await Notification.find({
                 userId: user._id.toString(),
                 recipientType: "user"
-            };
+            })
+            .sort({
+                createdAt: -1
+            })
 
-        }
+        res.status(200).json(data)
 
-        const data = await Notification.find(query)
-            .sort({ createdAt: -1 });
+    }
+    catch (err) {
 
-        res.status(200).json(data);
+        res.status(500).json(err)
 
-    } catch (err) {
-        res.status(500).json(err);
     }
 }
 

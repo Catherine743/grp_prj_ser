@@ -29,10 +29,9 @@ exports.addApplication = async (req, res) => {
             resume
 
         })
-        
+
         // ADMIN NOTIFICATION
         await Notification.create({
-            userId: "admin",
             type: "new-application",
             message: `${user} applied for ${designation}`,
             recipientType: "admin",
@@ -55,8 +54,6 @@ exports.editApplication = async (req, res) => {
 
         const { id } = req.params
 
-        const userEmail = req.payload
-
         const {
             user,
             email,
@@ -67,11 +64,6 @@ exports.editApplication = async (req, res) => {
 
         if (!app) {
             return res.status(404).json("Application not found")
-        }
-
-        // OWNER CHECK
-        if (app.email != userEmail) {
-            return res.status(403).json("Unauthorized")
         }
 
         // NEW RESUME
@@ -118,10 +110,7 @@ exports.getSingleApplication = async (req, res) => {
             return res.status(404).json("Application not found");
         }
 
-        if (
-            req.role !== "admin" &&
-            app.email !== req.payload
-        ) {
+        if (app.email !== req.payload) {
             return res.status(403).json("Unauthorized");
         }
 
@@ -134,12 +123,12 @@ exports.getSingleApplication = async (req, res) => {
     }
 }
 
-// GET ALL APPLICATIONS (USER)
+// GET USER APPLICATIONS (USER)
 exports.getUserApplications = async (req, res) => {
     try {
-        const userMail = req.payload;
-
-        const data = await applications.find({ email: userMail });
+        const data = await applications.find({
+            email: req.payload
+        });
 
         res.status(200).json(data);
 
@@ -185,7 +174,7 @@ exports.getAllApplications = async (req, res) => {
 
         const data = await applications.find();
 
-        res.status(200).json({ data });
+        res.status(200).json(data);
 
     } catch (err) {
         res.status(500).json(err);
@@ -211,7 +200,7 @@ exports.updateStatus = async (req, res) => {
             return res.status(400).json("Invalid status");
         }
 
-        app.status = status ?? app.status;
+        app.status = status;
 
         if (interviewDate !== undefined) {
             app.interviewDate = interviewDate;
@@ -240,10 +229,7 @@ exports.updateStatus = async (req, res) => {
                     .json("Interview date must be after today")
             }
 
-            const interview = new Date(interviewDate);
-
-            const diffTime =
-                interview.getTime() - today.getTime();
+            const diffTime = selectedDate.getTime() - today.getTime();
 
             const diffDays = Math.ceil(
                 diffTime / (1000 * 60 * 60 * 24)
@@ -268,7 +254,7 @@ exports.updateStatus = async (req, res) => {
         } else if (status === "Rejected") {
             message = `Your application for ${app.designation} was rejected`;
         }
-        
+
         await app.save();
 
         await Notification.create({
@@ -282,7 +268,6 @@ exports.updateStatus = async (req, res) => {
         res.status(200).json(app);
 
     } catch (err) {
-        console.log(err);
         res.status(500).json(err);
     }
 };
@@ -290,15 +275,14 @@ exports.updateStatus = async (req, res) => {
 // DELETE APPLICATION (ADMIN)
 exports.adminDeleteApplication = async (req, res) => {
     try {
-        const { id } = req.params;
+        const deleted =
+            await applications.findByIdAndDelete(
+                req.params.id
+            );
 
-        const app = await applications.findById(id);
-
-        if (!app) {
+        if (!deleted) {
             return res.status(404).json("Application not found");
         }
-
-        await applications.findByIdAndDelete(id);
 
         res.status(200).json("Hidden from admin view");
 

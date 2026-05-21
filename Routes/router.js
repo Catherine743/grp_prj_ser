@@ -16,6 +16,8 @@ router.post('/login', userController.loginController)
 // GOOGLE LOGIN
 router.post('/google-login', userController.googleLoginController)
 
+// USER ROUTES
+
 // ADD APPLICATION (USER)
 router.post('/add', jwtMiddleware, upload.single("resume"), appController.addApplication)
 
@@ -48,6 +50,8 @@ router.delete('/delete-notify/:id', jwtMiddleware, notificationController.delete
 
 // CLEAR NOTIFICATIONS (USER)
 router.delete('/clear-notify', jwtMiddleware, notificationController.clearAll)
+
+// ADMIN ROUTES
 
 // GET ALL APPLICATIONS (ADMIN)
 router.get('/all-apps', adminMiddleware, appController.getAllApplications)

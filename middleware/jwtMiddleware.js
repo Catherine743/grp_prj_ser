@@ -16,7 +16,6 @@ const jwtMiddleware = (req, res, next) => {
         catch (err) {
             res.status(401).json("Authorization failed!!! Invalid Token")
         }
-
     }
     else {
         res.status(401).json("Authorization failed!!! Please Provide Token")

@@ -6,22 +6,18 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-
     user: {
       type: String,
       required: true
     },
-
     email: {
       type: String,
       required: true
     },
-
     designation: {
       type: String,
       required: true
     },
-
     status: {
       type: String,
       enum: ["Applied", "Interview", "Offer", "Rejected"],

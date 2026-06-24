@@ -32,6 +32,7 @@ exports.addApplication = async (req, res) => {
 
         // ADMIN NOTIFICATION
         await Notification.create({
+            userId: "admin",
             type: "new-application",
             message: `${user} applied for ${designation}`,
             recipientType: "admin",
@@ -39,9 +40,10 @@ exports.addApplication = async (req, res) => {
         })
 
         res.status(200).json(newApp)
+        
+    }
 
-    } catch (err) {
-
+    catch (err) {
         res.status(500).json(err)
 
     }

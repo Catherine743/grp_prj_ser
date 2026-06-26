@@ -40,7 +40,7 @@ exports.addApplication = async (req, res) => {
         })
 
         res.status(200).json(newApp)
-        
+
     }
 
     catch (err) {
@@ -239,17 +239,13 @@ exports.updateStatus = async (req, res) => {
 
             // WITHIN 3 DAYS
 
-            if (diffDays <= 3 && diffDays >= 0) {
-
-                await Notification.create({
-                    userId: "admin",
-                    type: "interview-alert",
-                    message: `Interview for ${app.user} is scheduled on ${interviewDate}`,
-                    recipientType: "admin",
-                    read: false
-                });
-
-            }
+            await Notification.create({
+                userId: "admin",
+                type: "interview-alert",
+                message: `Interview for ${app.user} of ${app.designation} is scheduled on ${interviewDate}`,
+                recipientType: "admin",
+                read: false
+            });
 
         } else if (status === "Offer") {
             message = `Congratulations! You received an offer for ${app.designation}`;
